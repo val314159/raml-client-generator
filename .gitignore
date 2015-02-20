@@ -3,3 +3,16 @@ coverage
 node_modules
 .tmp
 npm-debug.log
+
+# python
+*.pyc
+*.pyo
+
+# emacs
+*~
+\#*
+.\#*
+
+# test dirs
+igjs
+igpy
