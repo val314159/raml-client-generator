@@ -9,6 +9,8 @@ module.exports = generator({
   templates: {
     '.gitignore':   require('./templates/.gitignore.hbs'),
     'index.js':     require('./templates/index.js.hbs'),
+    'raw.py':       require('./templates/raw.py.hbs'),
+    '__init__.py':  require('./templates/__init__.py.hbs'),
     'README.md':    require('./templates/README.md.hbs'),
     'INSTALL.md':   require('./templates/INSTALL.md.hbs'),
     'package.json': require('./templates/package.json.hbs')
