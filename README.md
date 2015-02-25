@@ -8,6 +8,13 @@ Template-driven generator of clients for APIs described by RAML.
 
 ## Installation
 
+For ramyam, type the following:
+
+```sh
+virtualenv .v
+source .v/bin/activate
+```
+
 First, make sure [node](http://nodejs.org) has been installed. Then, we can install it using `npm`:
 
 ```sh
@@ -15,6 +22,12 @@ npm install raml-client-generator -g
 ```
 
 ## Usage
+
+For ramyam, type the following:
+
+```sh
+sh run.sh
+```
 
 To generate an API client, point the command to your base RAML file and specify the output directory and language.
 
@@ -35,6 +48,12 @@ raml-to-client api.raml -o api-client -l javascript
 We're excited to see new languages soon! If you have a language you'd like to implement, check out the [implementation guide](IMPLEMENTATION.md).
 
 ## Testing
+
+For ramyam, type the following:
+
+```sh
+sh run.sh
+```
 
 ```sh
 npm install
