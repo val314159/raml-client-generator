@@ -18,14 +18,15 @@ def get_resource(doc,typ):
                 return v
     pass
 
-def gen2(doc,pfx='',parents=[]):
+def gen0(doc):
     leftovers = dict(doc)
-
-    leftovers.pop('securitySchemes','')
-    leftovers.pop('resourceTypes','')
-    leftovers.pop('title','')
-    leftovers.pop('traits','')
     docs = leftovers.pop('documentation','')
+    version = leftovers.pop('version','')
+    baseUri = leftovers.pop('baseUri','')
+    print("BU", version)
+    print("BU", baseUri)
+    baseUri = baseUri.replace('{version}',version)[:-1]
+    print("BU", baseUri)
     if os.environ.get('D'):
         for d in docs:
             print("  '''")
@@ -35,6 +36,17 @@ def gen2(doc,pfx='',parents=[]):
             print("'''")
             pass
         pass
+    ret = gen2(baseUri,leftovers,'',[])
+    return ret
+
+def gen2(baseUri,doc,pfx,parents):
+    leftovers = dict(doc)
+
+    leftovers.pop('securitySchemes','')
+    leftovers.pop('resourceTypes','')
+    leftovers.pop('title','')
+    leftovers.pop('traits','')
+
     typ    = leftovers.pop('type','')
     get    = leftovers.pop('get',{})
     post   = leftovers.pop('post',{})
@@ -51,7 +63,7 @@ def gen2(doc,pfx='',parents=[]):
     pfx2 = re.sub('{\w+}','%s',pfx)
 
     for path in get_paths(doc):
-        gen2(doc[path],pfx+path,parents + [uri])
+        gen2(baseUri,doc[path],pfx+path,parents + [uri])
         leftovers.pop(path)
         pass
 
@@ -100,16 +112,16 @@ def gen2(doc,pfx='',parents=[]):
             xschema=schema
             pass
 
-        d = dict(pfx=pfx, pfx2=pfx2,
+        d = dict(pfx=pfx, pfx2=pfx2, baseUri=baseUri,
                  desc=desc, method=method, func_name=func_name,
                  example=example, schema=schema,
                  xexample=xexample, xschema=xschema,
                  urik=str(urik), urik2=str(urik2))
 
         print('''\
-  def f{func_name}_{method}(_{urik2}):
+  def rpc{func_name}_{method}(_{urik2}):
     """{desc}{xexample}{xschema}"""
-    url = '{pfx2}' % ({urik})
+    url = '{baseUri}{pfx2}' % ({urik})
     ret = requests.{method}(url)
     return ret\
 '''.format(**d))
@@ -120,9 +132,10 @@ def main(fname=getarg(1)):
     global document
     document = yaml.load(open(fname))
     print("#ramyam 1", fname)
+    print("XX", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
     print("class API:")
-    gen2(document)
+    gen0(document)
     print()
     print("api = API()")
     pass
