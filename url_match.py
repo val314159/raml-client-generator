@@ -21,22 +21,24 @@ def match_first(arr,url):
         if m: return fn(m)
         pass
 
-pat1=convert_url(r'/base/{xxx}/{yyy}')
-pat2=convert_url(r'/base/{xxx}/{yyy}/whatevz')
+if __name__=='__main__':
+    pat1=convert_url(r'/base/{xxx}/{yyy}')
+    pat2=convert_url(r'/base/{xxx}/{yyy}/whatevz')
 
-def do_pat1(m):
-    print("DO IT1", m)
-    return m
+    def do_pat1(m):
+        print("DO IT1", m)
+        return m
 
-def do_pat2(m):
-    print("DO IT2", m)
-    return m
+    def do_pat2(m):
+        print("DO IT2", m)
+        return m
 
-arr = [(pat1,do_pat1),
-       (pat2,do_pat2)]
-x = match_first(arr,'/qqqqq')
-print(x)
-x = match_first(arr,'/base/xrx/yy/whatevz')
-print(x,x('xxx'))
-x = match_first(arr,'/base/xx/yeey')
-print(x,x('xxx'))
+    arr = [(pat1,do_pat1),
+           (pat2,do_pat2)]
+    x = match_first(arr,'/qqqqq')
+    print(x)
+    x = match_first(arr,'/base/xrx/yy/whatevz')
+    print(x,x('xxx'))
+    x = match_first(arr,'/base/xx/yeey')
+    print(x,x('xxx'))
+    pass
