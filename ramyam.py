@@ -22,7 +22,7 @@ def gen0(doc):
     leftovers = dict(doc)
     docs = leftovers.pop('documentation','')
     title   = leftovers.pop('title','')
-    version = leftovers.pop('version','')
+    version = str(leftovers.pop('version',''))
     baseUri = leftovers.pop('baseUri','')
     baseUri = baseUri.replace('{version}',version)[:-1]
     if os.environ.get('D'):
@@ -44,7 +44,7 @@ def gen2(baseUri,doc,pfx,parents):
     leftovers.pop('securitySchemes','')
     leftovers.pop('resourceTypes','')
     leftovers.pop('title','')
-    leftovers.pop('traits','')
+    leftovers.pop('traits',{})
 
     typ    = leftovers.pop('type','')
     get    = leftovers.pop('get',{})
@@ -69,7 +69,7 @@ def gen2(baseUri,doc,pfx,parents):
     urik = ','.join( k for k,v in arr )
     urik2 = ','+urik if urik else ''
 
-    func_name = pfx.replace('/','_').replace('{','_').replace('}','_').replace('-','_')
+    func_name = pfx.replace('/','_').replace('{','_').replace('}','_').replace('-','_').replace('.','_')
 
     import re
     pfx2 = re.sub('{\w+}','%s',pfx)
@@ -149,13 +149,13 @@ def main(fname=getarg(1)):
     print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
     print("class API:")
-    print("  traits = " + pformat(document['traits']))
-    print("  securitySchemes = " + pformat(document['securitySchemes']))
-    print("  resourceTypes = " + pformat(document['resourceTypes']))
-    print("  securedBy =", repr(document['securedBy']))
-    print("  mediaType =", repr(document['mediaType']))
-    print("  baseUri =", repr(document['baseUri']))
-    print("  version =", repr(document['version']))
+    print("  traits = " + pformat(document.get('traits',{})))
+    print("  securitySchemes = " + pformat(document.get('securitySchemes',{})))
+    print("  resourceTypes = " + pformat(document.get('resourceTypes',{})))
+    #print("  securedBy =", repr(document['securedBy']))
+    print("  mediaType =", repr(document.get('mediaType','')))
+    print("  baseUri =", repr(document.get('baseUri','')))
+    print("  version =", repr(document.get('version','')))
     print("  paths =", repr([k for k in document.keys() if k.startswith('/')]))
     gen0(document)
     print()
