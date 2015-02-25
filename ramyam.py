@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os, sys, yaml
-from pprint import pprint
+from pprint import pprint,pformat
 
 def getarg(n,m=None):
     try: return sys.argv[n]
@@ -21,15 +21,14 @@ def get_resource(doc,typ):
 def gen0(doc):
     leftovers = dict(doc)
     docs = leftovers.pop('documentation','')
+    title   = leftovers.pop('title','')
     version = leftovers.pop('version','')
     baseUri = leftovers.pop('baseUri','')
-    print("BU", version)
-    print("BU", baseUri)
     baseUri = baseUri.replace('{version}',version)[:-1]
-    print("BU", baseUri)
     if os.environ.get('D'):
         for d in docs:
             print("  '''")
+            print("#", title)
             print(d['title'])
             print('====')
             print(d['content'])
@@ -54,7 +53,20 @@ def gen2(baseUri,doc,pfx,parents):
     secBy  = leftovers.pop('securedBy',{})
 
     uri = leftovers.pop('uriParameters',{})
-    urik = ','.join( uri.keys() )
+    arr = []
+    #print("#QQQQQ", uri, parents)
+    for p in parents:
+        for k,v in p.iteritems():
+            #print("---", k, v)
+            arr.append((k,v))
+            pass
+    for k,v in uri.iteritems():
+        #print("---", k, v)
+        arr.append((k,v))
+        pass
+    #print("ARR", arr)
+    #urik = ','.join( dict(arr).keys() )
+    urik = ','.join( k for k,v in arr )
     urik2 = ','+urik if urik else ''
 
     func_name = pfx.replace('/','_').replace('{','_').replace('}','_').replace('-','_')
@@ -86,6 +98,9 @@ def gen2(baseUri,doc,pfx,parents):
         qp = rec.get('queryParameters',{})
         desc = rec.get('description')
 
+        #print("TYPE", typ)
+        #print("TYPE", get_resource(document,typ))
+
         #################################
         example = ''
         schema = ''
@@ -99,8 +114,8 @@ def gen2(baseUri,doc,pfx,parents):
 
         #################################
         if uri:
-            print('#uri',repr(uri)[:200])
-            print('#urip',repr(parents)[:200])
+            #print('#uri',repr(uri)[:200])
+            #print('#urip',repr(parents)[:200])
             pass
 
         xexample,xschema='',''
@@ -120,21 +135,28 @@ def gen2(baseUri,doc,pfx,parents):
 
         print('''\
   def rpc{func_name}_{method}(_{urik2}):
-    """{desc}{xexample}{xschema}"""
+    """{desc}{xexample}{xschema}    """
     url = '{baseUri}{pfx2}' % ({urik})
     ret = requests.{method}(url)
     return ret\
 '''.format(**d))
-
     pass
 
 def main(fname=getarg(1)):
     global document
     document = yaml.load(open(fname))
     print("#ramyam 1", fname)
-    print("XX", [_ for _ in document.keys() if not _.startswith('/')])
+    print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
     print("class API:")
+    print("  traits = " + pformat(document['traits']))
+    print("  securitySchemes = " + pformat(document['securitySchemes']))
+    print("  resourceTypes = " + pformat(document['resourceTypes']))
+    print("  securedBy =", repr(document['securedBy']))
+    print("  mediaType =", repr(document['mediaType']))
+    print("  baseUri =", repr(document['baseUri']))
+    print("  version =", repr(document['version']))
+    print("  paths =", repr([k for k in document.keys() if k.startswith('/')]))
     gen0(document)
     print()
     print("api = API()")
