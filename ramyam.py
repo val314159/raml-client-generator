@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import os, sys, yaml
 from pprint import pprint
 
@@ -9,9 +10,6 @@ def getarg(n,m=None):
 def get_paths(doc):
     return (_ for _ in doc.iterkeys() if _.startswith('/'))
 
-def get_nonpaths(doc):
-    return (_ for _ in doc.iterkeys() if not _.startswith('/'))
-
 def get_resource(doc,typ):
     rct = doc['resourceTypes']
     for rec in rct:
@@ -20,98 +18,112 @@ def get_resource(doc,typ):
                 return v
     pass
 
-def gen2(doc,pfx=''):
-    p = list(get_paths(doc))
-    np= list(get_nonpaths(doc))
-    print '**** %40s %120s %120s' % (repr(pfx), str(p), str(np))
+def gen2(doc,pfx='',parents=[]):
     leftovers = dict(doc)
-    for path in get_paths(doc):
-        #print "== PATH", pfx, path, [_ for _ in doc[path].keys()]
-        #typ = doc[path].get('type')
-        #if typ:
-        #    print "#ITS A TYP", repr(typ), pfx+path
-
-        gen2(doc[path],pfx+path)
-        leftovers.pop(path)
-        pass
-
-    typ    = leftovers.pop('type','')
-    get    = leftovers.pop('get','')
-    post   = leftovers.pop('post','')
-    delete = leftovers.pop('delete','')
-    leftovers.pop('securedBy','')
-
-    uri = leftovers.pop('uriParameters',{})
-    urik = ','.join( uri.keys() )
-    func_name = pfx.replace('/','_').replace('{','_').replace('}','_')
-
-    if get:
-        print 'get',repr(get)[:200]
-        print '''
-  def {func_name}_{method}(_,{urik}):
-    url = '{pfx}' % ({urik})
-    ret = requests.{method}(url)
-    return ret
-'''.format(pfx=pfx,method='get',func_name=func_name,urik=str(urik))
-        pass
-    if post:
-        print 'post',repr(post)[:200]
-        print '''
-  def {func_name}_{method}(_,{urik}):
-    url = '{pfx}' % ({urik})
-    ret = requests.{method}(url)
-    return ret
-'''.format(pfx=pfx,method='post',func_name=func_name,urik=str(urik))
-        pass
-    if delete:
-        print 'delete',repr(delete)[:200]
-        print '''
-  def {func_name}_{method}(_,{urik}):
-    url = '{pfx}' % ({urik})
-    ret = requests.{method}(url)
-    return ret
-'''.format(pfx=pfx,method='delete',func_name=func_name,urik=str(urik))
-        pass
-    if uri:
-        print 'uri',repr(uri)[:200]
-        pass
-    #print uri
 
     leftovers.pop('securitySchemes','')
     leftovers.pop('resourceTypes','')
     leftovers.pop('title','')
     leftovers.pop('traits','')
-    leftovers.pop('documentation','')
-    
-    print "LEFTOVERS", repr(leftovers)[:200]
-    pass
-
-def gen1(doc):
-    print doc.keys()
-    for path in get_paths(doc):
-        print "== PATH", path
-        typ = doc[path].get('type')
-        if typ:
-            print "ITS A TYP", typ
-            rc = get_resource(doc,typ)
-            print "RC =", rc.keys()
-            for k,v in rc.iteritems():
-                print '. . . . . .', k
-                pprint(v.get('queryParameters'))
-                pass            
-            #pprint(rc)
-        else:
+    docs = leftovers.pop('documentation','')
+    if os.environ.get('D'):
+        for d in docs:
+            print("  '''")
+            print(d['title'])
+            print('====')
+            print(d['content'])
+            print("'''")
             pass
+        pass
+    typ    = leftovers.pop('type','')
+    get    = leftovers.pop('get',{})
+    post   = leftovers.pop('post',{})
+    delete = leftovers.pop('delete',{})
+    secBy  = leftovers.pop('securedBy',{})
+
+    uri = leftovers.pop('uriParameters',{})
+    urik = ','.join( uri.keys() )
+    urik2 = ','+urik if urik else ''
+
+    func_name = pfx.replace('/','_').replace('{','_').replace('}','_').replace('-','_')
+
+    import re
+    pfx2 = re.sub('{\w+}','%s',pfx)
+
+    for path in get_paths(doc):
+        gen2(doc[path],pfx+path,parents + [uri])
+        leftovers.pop(path)
+        pass
+
+    rec=None
+    method=''
+    desc=None
+
+    if get:
+        rec=get
+        method='get'
+    elif post:
+        rec=post
+        method='post'
+    elif delete:
+        rec=delete
+        method='delete'
+        pass
+
+    if rec:
+        qp = rec.get('queryParameters',{})
+        desc = rec.get('description')
+
+        #################################
+        example = ''
+        schema = ''
+        for k in rec.get('responses',{}).keys():
+            v = rec['responses'][k]
+            example = ''.join(v.get('body',{}).get('example',''))
+            schema  = ''.join(v.get('body',{}).get('schema',''))
+            if example: example = 'Example: '+example
+            if schema : schema  = 'Schema : '+schema
+            pass
+
+        #################################
+        if uri:
+            print('#uri',repr(uri)[:200])
+            print('#urip',repr(parents)[:200])
+            pass
+
+        xexample,xschema='',''
+
+        if os.environ.get('E'):
+            xexample=example
+            pass
+        if os.environ.get('S'):
+            xschema=schema
+            pass
+
+        d = dict(pfx=pfx, pfx2=pfx2,
+                 desc=desc, method=method, func_name=func_name,
+                 example=example, schema=schema,
+                 xexample=xexample, xschema=xschema,
+                 urik=str(urik), urik2=str(urik2))
+
+        print('''\
+  def f{func_name}_{method}(_{urik2}):
+    """{desc}{xexample}{xschema}"""
+    url = '{pfx2}' % ({urik})
+    ret = requests.{method}(url)
+    return ret\
+'''.format(**d))
 
     pass
 
 def main(fname=getarg(1)):
-    print "#ramyam 1", fname
     global document
     document = yaml.load(open(fname))
-    print "import requests"
+    print("#ramyam 1", fname)
+    print("import requests")
+    print("class API:")
     gen2(document)
-    print
-    print "api = API()"
+    print()
+    print("api = API()")
     pass
 if __name__=='__main__': main()
