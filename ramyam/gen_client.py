@@ -1,11 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
-import os, sys, yaml, re
-from pprint import pprint,pformat
-
-def getarg(n,m=None):
-    try: return sys.argv[n]
-    except: return m
+from prelude import *
 
 def get_paths(doc):
     return (_ for _ in doc.iterkeys() if _.startswith('/'))
@@ -137,7 +131,7 @@ def gen2(baseUri,doc,pfx,parents):
 '''.format(**d))
     pass
 
-def gen_yaml(document):
+def gen_yaml_client(document):
     print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
     print("class API:")
@@ -154,17 +148,14 @@ def gen_yaml(document):
     print("api = API()")
     pass
 
-def usage(code,msg):
-    sys.stderr.write(msg)
-    sys.exit(code)
-    pass
-
 def main(switch=getarg(1),fname=getarg(2)):
-    print("#ramyam from", switch, fname)
+    print("#ramyam client from", switch, fname)
     if switch == '-y':
         global document
-        document = yaml.load(open(fname))
-        return gen_yaml(document)
+        document = load_yaml_document(fname)
+        return gen_yaml_client(document)
+    elif switch == '-js':
+        return usage(1,"I don't know how to deal with a json file yet :(\n")
     usage(1,"bad file type (expected -y or -js)\n")
 
-if __name__=='__main__': main()
+if __name__=='__main__':main()
