@@ -6,6 +6,16 @@
 #echo Trying python...
 #./bin/raml-client.js -l python     -o igpy -e data/instagram-api.raml
 
+if [ -d .v ]; then
+  echo exists
+else
+  echo not exist.  adding.
+  virtualenv .v
+fi
+
+source .v/bin/activate
+pip install -r requirements.txt
+
 echo 'Trying python (bitly-api.raml)...'
 python -mramyam.gen_client -y data/bitly-api.raml >bitly_api.py
 python -mramyam.gen_server -y data/bitly-api.raml >bitly_svr.py

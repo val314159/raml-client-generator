@@ -45,6 +45,12 @@ raml-to-client api.raml -o api-client -l javascript
   * Automatic `README.md` and `package.json` generation
   * Multi-part form data
 
+* [Python](languages/javascript) (`python`)
+  * Client code using requests
+  * Server code using WSGI
+  * High performance gevent WSGI server
+  * OAuth 2.0 Support **NO**
+
 We're excited to see new languages soon! If you have a language you'd like to implement, check out the [implementation guide](IMPLEMENTATION.md).
 
 ## Testing
