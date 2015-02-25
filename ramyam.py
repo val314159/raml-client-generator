@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import os, sys, yaml
+import os, sys, yaml, re
 from pprint import pprint,pformat
 
 def getarg(n,m=None):
@@ -24,7 +24,10 @@ def gen0(doc):
     title   = leftovers.pop('title','')
     version = str(leftovers.pop('version',''))
     baseUri = leftovers.pop('baseUri','')
-    baseUri = baseUri.replace('{version}',version)[:-1]
+    baseUri = baseUri.replace('{version}',version)
+    if baseUri.endswith('/'):
+        baseUri = baseUri[:-1]
+        pass
     if os.environ.get('D'):
         for d in docs:
             print("  '''")
@@ -41,8 +44,8 @@ def gen0(doc):
 def gen2(baseUri,doc,pfx,parents):
     leftovers = dict(doc)
 
-    leftovers.pop('securitySchemes','')
-    leftovers.pop('resourceTypes','')
+    leftovers.pop('securitySchemes',{})
+    leftovers.pop('resourceTypes',{})
     leftovers.pop('title','')
     leftovers.pop('traits',{})
 
@@ -71,7 +74,6 @@ def gen2(baseUri,doc,pfx,parents):
 
     func_name = pfx.replace('/','_').replace('{','_').replace('}','_').replace('-','_').replace('.','_')
 
-    import re
     pfx2 = re.sub('{\w+}','%s',pfx)
 
     for path in get_paths(doc):
@@ -97,10 +99,6 @@ def gen2(baseUri,doc,pfx,parents):
     if rec:
         qp = rec.get('queryParameters',{})
         desc = rec.get('description')
-
-        #print("TYPE", typ)
-        #print("TYPE", get_resource(document,typ))
-
         #################################
         example = ''
         schema = ''
@@ -111,15 +109,12 @@ def gen2(baseUri,doc,pfx,parents):
             if example: example = 'Example: '+example
             if schema : schema  = 'Schema : '+schema
             pass
-
         #################################
         if uri:
             #print('#uri',repr(uri)[:200])
             #print('#urip',repr(parents)[:200])
             pass
-
         xexample,xschema='',''
-
         if os.environ.get('E'):
             xexample=example
             pass
@@ -145,7 +140,7 @@ def gen2(baseUri,doc,pfx,parents):
 def main(fname=getarg(1)):
     global document
     document = yaml.load(open(fname))
-    print("#ramyam 1", fname)
+    print("#ramyam from", fname)
     print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
     print("class API:")
