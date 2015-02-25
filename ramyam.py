@@ -132,7 +132,7 @@ def gen2(baseUri,doc,pfx,parents):
   def rpc{func_name}_{method}(_{urik2}):
     """{desc}{xexample}{xschema}    """
     url = '{baseUri}{pfx2}' % ({urik})
-    ret = requests.{method}(url)
+    ret = requests.{method}(url,verify=False)
     return ret\
 '''.format(**d))
     pass
