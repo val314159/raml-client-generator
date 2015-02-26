@@ -1,6 +1,7 @@
 from __future__ import print_function
 import os, sys, yaml, re
 from pprint import pprint,pformat
+from cgi import parse_qs, escape
 
 def getarg(n,m=None):
     try: return sys.argv[n]

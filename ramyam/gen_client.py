@@ -125,7 +125,9 @@ def gen2(baseUri,doc,pfx,parents):
   def rpc{func_name}_{method}(_{urik2}):
     """{desc}{xexample}{xschema}    """
     url = '{baseUri}{pfx2}?access_token={access_token}' % ({urik})
-    ret = requests.{method}(url,verify=False)
+    url = '{baseUri}{pfx2}' % ({urik})
+    params=dict(access_token='{access_token}')
+    ret = requests.{method}(url,params=params,verify=False)
     return ret\
 '''.format(**d))
     pass

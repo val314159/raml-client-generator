@@ -123,12 +123,18 @@ def gen2(baseUri,doc,pfx,parents):
                  xexample=xexample, xschema=xschema,
                  urik=str(urik), urik2=str(urik2))
 
+
         print('''\
-  def svr{func_name}_{method}(_{urik2}):
+  def clt{func_name}_{method}(_{urik2}):
     """{desc}{xexample}{xschema}    """
     url = '{baseUri}{pfx2}' % ({urik})
     ret = requests.{method}(url,verify=False)
-    return ret\
+    return ret
+  def svr{func_name}_{method}(_,env,start):
+    d = parse_qs(env.get('QUERY_STRING',''))
+    #url = '{baseUri}{pfx2}' % ({urik})
+    #ret = requests.{method}(url,verify=False)
+    return clt{func_name}_{method}(_{urik2})\
 '''.format(**d))
     pass
 

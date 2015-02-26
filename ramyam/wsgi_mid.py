@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from __future__ import print_function
 
 def wrap(attr,env,start):
@@ -16,7 +15,7 @@ class RamlMiddleware:
         return path_info.replace('-','_').replace('/','_').replace('.','_')
     def __call__(self, env, start):
         flat_path_info = self.flatten(env['PATH_INFO'])
-        attr = getattr(self.raml,'rpc'+flat_path_info,None)
+        attr = getattr(self.raml,'svr'+flat_path_info,None)
         if attr:
             return wrap(attr,env,start)
         return self.app(env,start)
