@@ -111,8 +111,9 @@ def gen2(baseUri,doc,pfx,parents):
         if os.environ.get('S'):
             xschema=schema
             pass
-
+        pfx3 = pfx.replace('{','P<').replace('}','>')
         d = dict(pfx=pfx, pfx2=pfx2, baseUri=baseUri,
+                 pfx3=pfx3,
                  access_token=access_token,
                  desc=desc, method=method, func_name=func_name,
                  example=example, schema=schema,
@@ -121,10 +122,17 @@ def gen2(baseUri,doc,pfx,parents):
 
         print('''\
   def svr{func_name}_{method}(_,env,start):
-    d = parse_qs(env.get('QUERY_STRING',''))
+    print("ENV", env)
+    query_string = env['QUERY_STRING']
+    print("QUERY_STRING", query_string)
+    path_info = env['PATH_INFO']
+    print("PATH_INFO", path_info)
+    d = parse_qs(query_string)
+    pfx3 = '{pfx3}'
+    print("PFX3", pfx3)
     #url = '{baseUri}{pfx2}' % ({urik})
     #ret = requests.{method}(url,verify=False)
-    return clt{func_name}_{method}(_{urik2})
+    return _.clt{func_name}_{method}(_{urik2})
   def clt{func_name}_{method}(_{urik2}):
     """{desc}{xexample}{xschema}    """
     url = '{baseUri}{pfx2}' % ({urik})
@@ -138,6 +146,7 @@ def gen2(baseUri,doc,pfx,parents):
 def gen_yaml_server(document):
     print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
+    print("from urlparse import parse_qs")
     print("class RamlObj:")
     print("  traits = " + pformat(document.get('traits',{})))
     print("  securitySchemes = " + pformat(document.get('securitySchemes',{})))
@@ -150,8 +159,8 @@ def gen_yaml_server(document):
     gen0(document)
     print("")
     print("if __name__=='__main__':")
-    print("  from ramyam.wsgi_svr import main")
-    print("  main(RamlObj)")
+    print("  import ramyam.wsgi_svr")
+    print("  ramyam.wsgi_svr.main(RamlObj)")
     pass
 
 def main(switch=getarg(1),fname=getarg(2)):

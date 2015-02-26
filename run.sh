@@ -73,7 +73,6 @@ if [ "$all" == "yes" ]; then
 fi
 
 if [ "$1" == "run" ]; then
-  echo 'Running server...'
-  #PORT_OFFSET=9000 python -mramyam.wsgi_svr
-  PORT_OFFSET=8000 python instagram_svr.py
+  echo 'Running instagram server... (ports 9080 & 9443)'
+  PORT_OFFSET=9000 python instagram_svr.py
 fi
