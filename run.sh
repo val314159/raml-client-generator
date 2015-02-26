@@ -20,6 +20,8 @@ else
   pip install -r requirements.txt
 fi
 
+source .v/bin/activate
+
 all=
 if [ "$1" == "" ]; then
   all=yes
@@ -72,5 +74,6 @@ fi
 
 if [ "$1" == "run" ]; then
   echo 'Running server...'
-  PORT_OFFSET=9000 python -mramyam.wsgi_svr
+  #PORT_OFFSET=9000 python -mramyam.wsgi_svr
+  PORT_OFFSET=8000 python instagram_svr.py
 fi

@@ -2,8 +2,6 @@
 from __future__ import print_function
 from prelude import *
 
-access_token='185651424.1fb234f.713bd9c785c444ce8d99e4032a55cfa4'
-
 def get_paths(doc):
     return (_ for _ in doc.iterkeys() if _.startswith('/'))
 

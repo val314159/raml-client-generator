@@ -52,18 +52,13 @@ def gen2(baseUri,doc,pfx,parents):
 
     uri = leftovers.pop('uriParameters',{})
     arr = []
-    #print("#QQQQQ", uri, parents)
     for p in parents:
         for k,v in p.iteritems():
-            #print("---", k, v)
             arr.append((k,v))
             pass
     for k,v in uri.iteritems():
-        #print("---", k, v)
         arr.append((k,v))
         pass
-    #print("ARR", arr)
-    #urik = ','.join( dict(arr).keys() )
     urik = ','.join( k for k,v in arr )
     urik2 = ','+urik if urik else ''
 
@@ -118,30 +113,32 @@ def gen2(baseUri,doc,pfx,parents):
             pass
 
         d = dict(pfx=pfx, pfx2=pfx2, baseUri=baseUri,
+                 access_token=access_token,
                  desc=desc, method=method, func_name=func_name,
                  example=example, schema=schema,
                  xexample=xexample, xschema=xschema,
                  urik=str(urik), urik2=str(urik2))
 
-
         print('''\
-  def clt{func_name}_{method}(_{urik2}):
-    """{desc}{xexample}{xschema}    """
-    url = '{baseUri}{pfx2}' % ({urik})
-    ret = requests.{method}(url,verify=False)
-    return ret
   def svr{func_name}_{method}(_,env,start):
     d = parse_qs(env.get('QUERY_STRING',''))
     #url = '{baseUri}{pfx2}' % ({urik})
     #ret = requests.{method}(url,verify=False)
-    return clt{func_name}_{method}(_{urik2})\
+    return clt{func_name}_{method}(_{urik2})
+  def clt{func_name}_{method}(_{urik2}):
+    """{desc}{xexample}{xschema}    """
+    url = '{baseUri}{pfx2}' % ({urik})
+    ret = requests.{method}(url,verify=False)
+    params=dict(access_token='{access_token}')
+    ret = requests.{method}(url,params=params,verify=False)
+    return ret\
 '''.format(**d))
     pass
 
 def gen_yaml_server(document):
     print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
-    print("class ApiServer:")
+    print("class RamlObj:")
     print("  traits = " + pformat(document.get('traits',{})))
     print("  securitySchemes = " + pformat(document.get('securitySchemes',{})))
     print("  resourceTypes = " + pformat(document.get('resourceTypes',{})))
@@ -151,8 +148,10 @@ def gen_yaml_server(document):
     print("  version =", repr(document.get('version','')))
     print("  paths =", repr([k for k in document.keys() if k.startswith('/')]))
     gen0(document)
-    print()
-    print("api = API()")
+    print("")
+    print("if __name__=='__main__':")
+    print("  from ramyam.wsgi_svr import main")
+    print("  main(RamlObj)")
     pass
 
 def main(switch=getarg(1),fname=getarg(2)):
