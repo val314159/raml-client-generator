@@ -1,5 +1,8 @@
 #!/usr/bin/env python
+from __future__ import print_function
 from prelude import *
+
+access_token='185651424.1fb234f.713bd9c785c444ce8d99e4032a55cfa4'
 
 def get_paths(doc):
     return (_ for _ in doc.iterkeys() if _.startswith('/'))
@@ -51,18 +54,13 @@ def gen2(baseUri,doc,pfx,parents):
 
     uri = leftovers.pop('uriParameters',{})
     arr = []
-    #print("#QQQQQ", uri, parents)
     for p in parents:
         for k,v in p.iteritems():
-            #print("---", k, v)
             arr.append((k,v))
             pass
     for k,v in uri.iteritems():
-        #print("---", k, v)
         arr.append((k,v))
         pass
-    #print("ARR", arr)
-    #urik = ','.join( dict(arr).keys() )
     urik = ','.join( k for k,v in arr )
     urik2 = ','+urik if urik else ''
 
@@ -117,6 +115,7 @@ def gen2(baseUri,doc,pfx,parents):
             pass
 
         d = dict(pfx=pfx, pfx2=pfx2, baseUri=baseUri,
+                 access_token=access_token,
                  desc=desc, method=method, func_name=func_name,
                  example=example, schema=schema,
                  xexample=xexample, xschema=xschema,
@@ -125,7 +124,7 @@ def gen2(baseUri,doc,pfx,parents):
         print('''\
   def rpc{func_name}_{method}(_{urik2}):
     """{desc}{xexample}{xschema}    """
-    url = '{baseUri}{pfx2}' % ({urik})
+    url = '{baseUri}{pfx2}?access_token={access_token}' % ({urik})
     ret = requests.{method}(url,verify=False)
     return ret\
 '''.format(**d))
@@ -135,6 +134,7 @@ def gen_yaml_client(document):
     print("#", [_ for _ in document.keys() if not _.startswith('/')])
     print("import requests")
     print("class API:")
+    print("  access_token = " + repr(access_token))
     print("  traits = " + pformat(document.get('traits',{})))
     print("  securitySchemes = " + pformat(document.get('securitySchemes',{})))
     print("  resourceTypes = " + pformat(document.get('resourceTypes',{})))
