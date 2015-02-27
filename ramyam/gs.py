@@ -163,6 +163,14 @@ def xloop(d,doc=None,pfx='',
             qp = dict(query_parms,**v.get('queryParameters',{}))
             fp = dict(form_parms, **v.get('formParameters',{}))
 
+            if 'type' in v:
+                print(tab+'// GENERATE NODE ', v['type'], up, qp, fp)
+                print(tab+'||--- GEN')
+                print(tab+'||--- GEN')
+                print(tab+'||--- GEN')
+                print(tab+'\\\\ GENERATE NODE')
+                pass
+
             xloop(v,doc,pfx=pfx+str(k),
                   uri_parms=up,query_parms=qp,form_parms=fp,
                   tab=tab+'  ')
