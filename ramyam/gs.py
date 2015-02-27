@@ -168,7 +168,7 @@ def xloop(d,doc=None,pfx='',
                 print(tab+'||--- GEN')
                 print(tab+'||--- GEN')
                 print(tab+'||--- GEN')
-                print(tab+'\\\\ GENERATE NODE')
+                print(tab+'\\\\ GENERATE NODE', pfx+str(k))
                 pass
 
             xloop(v,doc,pfx=pfx+str(k),
