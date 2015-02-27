@@ -149,7 +149,8 @@ def gen2(baseUri,doc,pfx,parents):
 
 def xloop(d,doc=None,pfx='',
           uri_parms=[],query_parms=[],form_parms=[],
-          tab='--> '):
+          tab='--> ',acc=None):
+    if acc is None: acc=[]
 
     def xonce_path(k,v):
         new_path = pfx+str(k)
@@ -179,7 +180,8 @@ def xloop(d,doc=None,pfx='',
                 xprint(tab+'||--- METHOD delete ' + str(d.keys()))
 
                 def gen_node(method,what):
-                    print(".gen ", method,new_path,up,qp,fp)
+                    #print(".gen ", method,new_path,up,qp,fp)
+                    acc.append((method,new_path,dict(uri=up,query=qp,form=fp)))
                     pass
 
                 if g: gen_node('get',g)
@@ -190,7 +192,7 @@ def xloop(d,doc=None,pfx='',
                 pass
 
             xloop(v,doc,pfx=new_path,tab=tab+'  ',
-                  uri_parms=up,query_parms=qp,form_parms=fp)
+                  uri_parms=up,query_parms=qp,form_parms=fp,acc=acc)
             
             pass
         else:
@@ -203,7 +205,7 @@ def xloop(d,doc=None,pfx='',
     for k,v in d.iteritems():
         if k.startswith('/'):
             xonce_path(k,v)
-
+    return acc
 
 def loop(d,doc,pfx='',uri_parms=[],query_parms=[],form_parms=[]):
     for k,v in d.iteritems():
@@ -248,8 +250,9 @@ def loop(d,doc,pfx='',uri_parms=[],query_parms=[],form_parms=[]):
 
 def gen_yaml_server2(document):
     xprint('###')
-    xloop(document,tab='@@@@ ')
+    zz = xloop(document,tab='@@@@ ')
     xprint('###')
+    pprint(zz)
     pass
 
 def gen_yaml_server(document):
