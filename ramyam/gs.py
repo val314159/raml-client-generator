@@ -44,26 +44,32 @@ def xloop(d,doc=None,pfx='',acc=None,
         pass
     return acc
 
-def gen_yaml_server(document):
+def gen_yaml_server(zz,fname):
     from .hb import subst2
 
     try: os.mkdir('outf')
     except: pass
 
-    zz = xloop(document)
     # python
-    subst2(zz,'__init__.py.hbs',    'python')
-    subst2(zz,'__main__.py.hbs',    'python')
-    subst2(zz,'use_requests.py.hbs','python')
+    subst2(zz,fname,'__init__.py.hbs',    'python')
+    subst2(zz,fname,'__main__.py.hbs',    'python')
+    subst2(zz,fname,'use_requests.py.hbs','python')
     # C
-    subst2(zz,'c_curl.c.hbs','c')
+    subst2(zz,fname,'c_curl.c.hbs','c')
     pass
 
 def main(switch=getarg(1),fname=getarg(2)):
     if switch == '-y':
         global document
         document = load_yaml_document(fname)
-        return gen_yaml_server(document)
+        zz = xloop(document)
+        if '-intermediate' in sys.argv:
+            import json
+            print(json.dumps(zz,indent=4))
+            return
+        else:
+            return gen_yaml_server(zz,fname)
+        pass
     elif switch == '-js':
         return usage(1,"I don't know how to deal with a json file yet :(\n")
     usage(1,"bad file type (expected -y or -js)\n")
