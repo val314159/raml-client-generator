@@ -29,7 +29,7 @@ def mkdir2(dir):
     try:
         os.mkdir(dir)
     except:
-        traceback.print_exc()
+        #traceback.print_exc()
         pass
 
 def subst2(zz,fname,infile,language):

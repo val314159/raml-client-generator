@@ -47,9 +47,6 @@ def xloop(d,doc=None,pfx='',acc=None,
 def gen_yaml_server(zz,fname):
     from .hb import subst2
 
-    try: os.mkdir('outf')
-    except: pass
-
     # python
     subst2(zz,fname,'__init__.py.hbs',    'python')
     subst2(zz,fname,'__main__.py.hbs',    'python')

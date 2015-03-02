@@ -14,7 +14,8 @@ def usage(code,msg):
 
 def load_yaml_document(fname):
     from yaml_loader import Loader
-    document = yaml.load(open(fname),Loader)
+    full_name = os.environ.get('INDIR','.')+'/'+fname
+    document = yaml.load(open(full_name),Loader)
     return document
 
 access_token='185651424.1fb234f.713bd9c785c444ce8d99e4032a55cfa4'
