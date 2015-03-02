@@ -22,9 +22,11 @@ def subst(fname,context,verbose=False,outfile=None):
         pass
     return output
 
-def subst2(zz,infile,outfile=None):
-    if outfile is None and infile.endswith('hbs'): outfile=infile[:-4]
-    subst('inf/'+infile,dict(d=zz),outfile='outf/'+outfile)
+def subst2(zz,infile,language):
+    if infile.endswith('.hbs'): outfile=infile[:-4]
+    inf = 'languages/'+language+'/templates/'+infile
+    subst(inf,dict(d=zz),outfile='outf/'+outfile)
+    pass
 
 if __name__=='__main__':subst('stuff.hbs',
                               {'name': 'Will'},
