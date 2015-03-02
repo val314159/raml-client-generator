@@ -1,0 +1,56 @@
+
+#include <stdio.h>
+#include <curl/curl.h>
+
+{{#each d}}
+void rpc{{flat_path}}_{{method}}(CURL*self,
+    {{#each parmsx.uri}}char*{{key_name}},{{/each}}
+    {{#each parmsx.query}}char*{{key_name}},{{/each}}
+    {{#each parmsx.form}}char*{{key_name}},{{/each}})){
+    char *path="{{path}}";
+    char *path2=path;
+    //query_dict={}
+    //form_dict={}
+    {{#each parmsx.uri}}
+    //# u p {{{.}}}
+    printf("REPLACE\n");
+    //path2 = path2.replace('{'+'{{key_name}}'+'}',{{key_name}})
+    {{/each}}
+    {{#each parmsx.query}}
+    //# q p {{{.}}}
+    "{{key_name}}";
+    {{key_name}});
+    //query_dict['{{key_name}}'] = {{key_name}})
+    {{/each}}
+    {{#each parmsx.form}}
+    //# f p {{{.}}}
+    "{{key_name}}";
+    {{key_name}});
+    //form_dict['{{key_name}}'] = {{key_name}})
+    {{/each}}
+    //return requests.{{method}}(path2,params=query_dict,data=form_dict)*/
+}
+{{/each}}
+
+int main(void) {
+  printf("hello world\n");
+  CURL *curl;
+  CURLcode res;
+  curl = curl_easy_init();
+  if(curl) {
+    curl_easy_setopt(curl, CURLOPT_URL, "http://example.com");
+    /* example.com is redirected, so we tell libcurl to follow redirection */
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+ 
+    /* Perform the request, res will get the return code */
+    res = curl_easy_perform(curl);
+    /* Check for errors */
+    if(res != CURLE_OK)
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",
+              curl_easy_strerror(res));
+
+    /* always cleanup */
+    curl_easy_cleanup(curl);
+  }
+  return 0;
+}

@@ -45,11 +45,18 @@ def xloop(d,doc=None,pfx='',acc=None,
     return acc
 
 def gen_yaml_server(document):
+    from .hb import subst2
+
+    try: mkdir('outf')
+    except: pass
+
     zz = xloop(document)
-    from .hb import subst
-    subst('__init__.py.hbs',dict(d=zz),outfile='__init__.py')
-    subst('__main__.py.hbs',dict(d=zz),outfile='__main__.py')
-    subst('use_requests.py.hbs',dict(d=zz),outfile='use_requests.py')
+    # python
+    subst2(zz,'__init__.py.hbs')
+    subst2(zz,'__main__.py.hbs')
+    subst2(zz,'use_requests.py.hbs')
+    # C
+    subst2(zz,'c_curl.c.hbs')
     pass
 
 def main(switch=getarg(1),fname=getarg(2)):
