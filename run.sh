@@ -36,6 +36,7 @@ fi
 if [ "$2" == "ig" ]; then
   echo 'Trying python (instagram-api.raml)...'
   python -mramyam.gs -y instagram-api.raml -intermediate >gen/languages/js/instagram-api.json
+  echo ...
   python -mramyam.gs -y instagram-api.raml
   #python -mramyam.gen_server -y data/instagram-api.raml >instagram_svr.py
 fi
@@ -43,42 +44,50 @@ fi
 if [ "$all" == "yes" ]; then
   echo 'Trying python (bitly-api.raml)...'
   python -mramyam.gs -y bitly-api.raml -intermediate >gen/languages/js/bitly-api.json
+  echo ...
   python -mramyam.gs -y bitly-api.raml
   #python -mramyam.gen_server -y data/bitly-api.raml >bitly_svr.py
 
   echo 'Trying python (box-api.raml)...'
   python -mramyam.gs -y box-api.raml -intermediate >gen/languages/js/box-api.json
-  python -mramyam.gs -y box-api.raml >box_api.py
+  echo ...
+  python -mramyam.gs -y box-api.raml
   #python -mramyam.gen_server -y data/box-api.raml >box_svr.py
 
   echo 'Trying python (instagram-api.raml)...'
   python -mramyam.gs -y instagram-api.raml -intermediate >gen/languages/js/instagram-api.json
+  echo ...
   python -mramyam.gs -y instagram-api.raml
   #python -mramyam.gen_server -y data/instagram-api.raml >instagram_svr.py
 
   echo 'Trying python (twilio-rest-api.raml)...'
   python -mramyam.gs -y twilio-rest-api.raml -intermediate >gen/languages/js/twilio.json
-  python -mramyam.gs -y twilio-rest-api.raml >twilio_api.py
+  echo ...
+  python -mramyam.gs -y twilio-rest-api.raml
   #python -mramyam.gen_server -y data/twilio-rest-api.raml >twilio_svr.py
 
   echo 'Trying python (github-api-v3.raml)...'
   python -mramyam.gs -y github-api-v3.raml -intermediate >gen/languages/js/github-v3.json
-  python -mramyam.gs -y github-api-v3.raml >github_api.py
+  echo ...
+  python -mramyam.gs -y github-api-v3.raml
   #python -mramyam.gen_server -y data/github-api-v3.raml >gibhub_svr.py
 
   echo 'Trying python (stripe-api.raml)...'
   python -mramyam.gs -y stripe-api.raml -intermediate >gen/languages/js/stripe-api.json
-  python -mramyam.gs -y stripe-api.raml >stripe_api.py
+  echo ...
+  python -mramyam.gs -y stripe-api.raml
   #python -mramyam.gen_server -y data/stripe-api.raml >stripe_svr.py
 
   echo 'Trying python (twitter-rest-api.raml)...'
   python -mramyam.gs -y twitter-rest-api.raml -intermediate >gen/languages/js/twitter-rest.json
-  python -mramyam.gs -y twitter-rest-api.raml >twitter_rest_api.py
+  echo ...
+  python -mramyam.gs -y twitter-rest-api.raml
   #python -mramyam.gen_server -y data/twitter-rest-api.raml >twitter_rest_svr.py
 
   echo 'Trying python (twitter-api.raml)...'
   python -mramyam.gs -y twitter.raml -intermediate >gen/languages/js/twitter.json
-  python -mramyam.gs -y twitter.raml >twitter_api.py
+  echo ...
+  python -mramyam.gs -y twitter.raml
   #python -mramyam.gen_server -y data/twitter.raml >twitter_svr.py
 
   echo Complete.

@@ -16,23 +16,25 @@ class API:
     path2=path
     query_dict={}
     form_dict={}
-    {{#each parmsx.uri}}
+{{#each parmsx.uri}}
     # u p {{{.}}}
     path2 = path2.replace('{'+'{{key_name}}'+'}',{{key_name}})
-    {{/each}}
-    {{#each parmsx.query}}
+
+{{/each}}
+{{#each parmsx.query}}
     # q p {{{.}}}
-    query_dict['{{key_name}}'] = {{key_name}})
-    {{/each}}
-    {{#each parmsx.form}}
+    query_dict['{{key_name}}'] = {{key_name}}
+
+{{/each}}
+{{#each parmsx.form}}
     # f p {{{.}}}
-    form_dict['{{key_name}}'] = {{key_name}})
-    {{/each}}
+    form_dict['{{key_name}}'] = {{key_name}}
+
+{{/each}}
     return requests.{{method}}(path2,params=query_dict,data=form_dict)
 {{/each}}
 
 if __name__=='__main__':
-   print 100
    import os
    access_token=os.environ.get('ACCESS_TOKEN','TOK')
    api=API('https://api.instagram.com/v1/','?access_token='+access_token)
