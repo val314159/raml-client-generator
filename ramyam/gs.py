@@ -27,10 +27,27 @@ def xloop(d,doc=None,pfx='',acc=None,
 
                     #print("DDDDD QFF", flat_path, what.get('queryParameters',{}))
                     qp = what.get('queryParameters',{})
-
+                    body = what.get('body',{})
+                    nnfp = {}
+                    if body:
+                        kk,vv = list(body.iteritems())[0]
+                        if kk == 'formParameters':
+                            print("#1111",vv)
+                            nnfp = vv
+                            pass
+                        elif kk == 'application/x-www-form-urlencoded':
+                            print("#2222", vv.get('formParameters',{}))
+                            nnfp = vv.get('formParameters',{})
+                            pass
+                        else:
+                            print("#3333",k)
+                            pass
+                        print("#NFP", nnfp)
+                        pass
                     uri  =[dict(v,key_name=k) for k,v in up.iteritems()]
                     query=[dict(v,key_name=k) for k,v in qp.iteritems()]
-                    form =[dict(v,key_name=k) for k,v in fp.iteritems()]
+                    #xform =[dict(v,key_name=k) for k,v in fp.iteritems()]
+                    form =[dict(v,key_name=k) for k,v in (nnfp or fp).iteritems()]
                     d=dict(method=method,path=new_path,flat_path=flat_path,
                            parmsx=dict(uri=uri,query=query,form=form))
                     #print("DDDDD 1 ", flat_path, d)
