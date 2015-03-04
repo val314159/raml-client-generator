@@ -32,17 +32,17 @@ def xloop(d,doc=None,pfx='',acc=None,
                     if body:
                         kk,vv = list(body.iteritems())[0]
                         if kk == 'formParameters':
-                            print("#1111",vv)
+                            #print("#1111",vv)
                             nnfp = vv
                             pass
                         elif kk == 'application/x-www-form-urlencoded':
-                            print("#2222", vv.get('formParameters',{}))
+                            #print("#2222", vv.get('formParameters',{}))
                             nnfp = vv.get('formParameters',{})
                             pass
                         else:
-                            print("#3333",k)
+                            print("#3333",kk)
                             pass
-                        print("#NFP", nnfp)
+                        #print("#NFP", nnfp)
                         pass
                     uri  =[dict(v,key_name=k) for k,v in up.iteritems()]
                     query=[dict(v,key_name=k) for k,v in qp.iteritems()]
