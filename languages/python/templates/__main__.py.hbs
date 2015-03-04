@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+if __name__=='__main__':
+   print '''
+Don't run this package directly.  Instead, use one of the following subpackages:
+
+  python -m<thisapi>.use_requests # to use Requests as your underlying client API
+
+ok that's all there is now, but there should maybe be one for the native https calls
+and another one that doesnt block when it's inside of a gevent loop
+
+'''
