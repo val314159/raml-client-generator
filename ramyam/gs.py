@@ -2,6 +2,24 @@
 from __future__ import print_function
 from prelude import *
 
+import datetime
+#dthandler = lambda obj: (
+#    obj.isoformat()
+#    if isinstance(obj, datetime.datetime)
+#    or isinstance(obj, datetime.date)
+#    else None)
+#>>> json.dumps(datetime.datetime.now(), default=dthandler)
+#'"2010-04-20T20:08:21.634121"'
+
+# ISO 8601 format.
+def handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    #elif isinstance(obj, ...):
+    #    return ...
+    else:
+        raise TypeError, 'Object of type %s with value of %s is not JSON serializable' % (type(obj), repr(obj))
+
 def xloop(d,doc=None,pfx='',acc=None,
           uri_parms=[],query_parms=[],form_parms=[]):
 
@@ -89,7 +107,7 @@ def main(switch=getarg(1),fname=getarg(2)):
         zz = xloop(document)
         if '-intermediate' in sys.argv:
             import json
-            print(json.dumps(zz,indent=4))
+            print(json.dumps(zz,indent=4,default=handler))
             return
         else:
             return gen_yaml_server(zz,fname)

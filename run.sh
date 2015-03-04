@@ -41,6 +41,14 @@ if [ "$2" == "ig" ]; then
   #python -mramyam.gen_server -y data/instagram-api.raml >instagram_svr.py
 fi
 
+if [ "$1" == "twilio" ]; then
+  echo 'Trying python (twilio-rest-api.raml)...'
+  python -mramyam.gs -y twilio-rest-api.raml -intermediate >gen/languages/js/twilio.json
+  echo ...
+  python -mramyam.gs -y twilio-rest-api.raml
+  #python -mramyam.gen_server -y data/twilio-rest-api.raml >twilio_svr.py
+fi
+
 if [ "$all" == "yes" ]; then
   echo 'Trying python (bitly-api.raml)...'
   python -mramyam.gs -y bitly-api.raml -intermediate >gen/languages/js/bitly-api.json
