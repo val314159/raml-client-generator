@@ -20,11 +20,23 @@ def handler(obj):
     else:
         raise TypeError, 'Object of type %s with value of %s is not JSON serializable' % (type(obj), repr(obj))
 
-def xloop(d,doc=None,pfx='',acc=None,
+def docloop(d,doc=None,pfx='',acc=None,
           uri_parms=[],query_parms=[],form_parms=[]):
-
     if acc is None: acc=[]
     if doc is None: doc=d
+    print("QQZ KEYS", doc.keys())
+    print("QQZ SECURED BY", doc.get('securedBy'))
+    print("QQZ SECURITY SCHEMES", doc.get('securitySchemes'))
+    for ss in doc.get('securitySchemes',[]):
+        print("QQZzzz")
+        pprint(ss)
+        pass
+    return xloop(d,doc,pfx,acc,uri_parms,query_parms,form_parms)
+
+def xloop(d,doc=None,pfx='',acc=None,
+          uri_parms=[],query_parms=[],form_parms=[]):
+    #if acc is None: acc=[]
+    #if doc is None: doc=d
 
     for k,v in d.iteritems():
         if k.startswith('/'):
@@ -58,7 +70,7 @@ def xloop(d,doc=None,pfx='',acc=None,
                             nnfp = vv.get('formParameters',{})
                             pass
                         else:
-                            print("#3333",kk)
+                            print("#Unknown ",kk)
                             pass
                         #print("#NFP", nnfp)
                         pass
@@ -103,8 +115,12 @@ def gen_yaml_server(zz,fname):
 def main(switch=getarg(1),fname=getarg(2)):
     if switch == '-y':
         global document
+        print("QQZ")
+        print("QQZ")
+        print("QQZ")
+        print("QQZ FNAME", fname)
         document = load_yaml_document(fname)
-        zz = xloop(document)
+        zz = docloop(document)
         if '-intermediate' in sys.argv:
             import json
             print(json.dumps(zz,indent=4,default=handler))
