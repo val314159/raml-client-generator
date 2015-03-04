@@ -3,7 +3,43 @@
 import requests
 
 class API:
-  def __init__(self,pfx,sfx=''):
+  def __init__(self,pfx,sfx='',
+{{#each yaml.securitySchemes}}
+{{#oauth_2_0}}
+        # headers
+{{#each describedBy.headers}}
+        {{@key}}=None,
+{{/each}}
+        # queryParameters
+{{#each describedBy.queryParameters}}
+        {{@key}}=None,
+{{/each}}
+{{/oauth_2_0}}
+{{/each}}
+):
+{{#each yaml.securitySchemes}}
+
+{{#basic}}
+    # Basic authentication NYI (not yet implemented)
+    sys.stderr.write("Basic authentication NYI (not yet implemented)")
+{{/basic}}
+
+{{#oauth_1_0}}
+    # OAuth1.0 authentication NYI (not yet implemented)
+    sys.stderr.write("OAuth1.0 authentication NYI (not yet implemented)")
+{{/oauth_1_0}}
+
+{{#oauth_2_0}}
+    #typ = "{{type}}"
+    #describedBy = {{{describedBy}}}
+    #description = """{{{description}}}"""
+    #settings = {{{settings}}}
+{{/oauth_2_0}}
+
+{{/each}}
+
+
+
     self.pfx=pfx
     self.sfx=sfx
     pass

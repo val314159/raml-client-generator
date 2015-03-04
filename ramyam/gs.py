@@ -31,7 +31,18 @@ def docloop(d,doc=None,pfx='',acc=None,
         print("QQZzzz")
         pprint(ss)
         pass
-    return xloop(d,doc,pfx,acc,uri_parms,query_parms,form_parms)
+    securitySchemes = doc.get('securitySchemes',[])
+    print("wQQQQQQQQ",securitySchemes)
+    for ss in securitySchemes:
+        print(" -- ss", ss.keys())
+        for k in ss.keys():
+            print(" -- ss:", k, ss[k].keys())
+            pass
+        pass
+    ret = xloop(d,doc,pfx,acc,uri_parms,query_parms,form_parms)
+    ret['yaml'] = doc
+    ret['securitySchemes'] = securitySchemes
+    return ret
 
 def xloop(d,doc=None,pfx='',acc=None,
           uri_parms=[],query_parms=[],form_parms=[]):
@@ -99,7 +110,7 @@ def xloop(d,doc=None,pfx='',acc=None,
                 pass
             pass
         pass
-    return acc
+    return dict(d=acc)
 
 def gen_yaml_server(zz,fname):
     from .hb import subst2

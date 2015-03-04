@@ -43,7 +43,8 @@ def subst2(zz,fname,infile,language):
     mkdir2('gen/languages/'+language+'/'+fname)
     #print("S900")
     dir = 'gen/languages/'+language+'/'+fname
-    subst(inf,dict(d=zz),outfile=dir+'/'+outfile)
+    subst(inf,zz,outfile=dir+'/'+outfile)
+    #subst(inf,dict(d=zz),outfile=dir+'/'+outfile)
     pass
 
 if __name__=='__main__':subst('stuff.hbs',
