@@ -17,6 +17,7 @@ class API:
 {{/oauth_2_0}}
 {{/each}}
 ):
+
 {{#each yaml.securitySchemes}}
 
 {{#basic}}
@@ -30,10 +31,19 @@ class API:
 {{/oauth_1_0}}
 
 {{#oauth_2_0}}
-    #typ = "{{type}}"
-    #describedBy = {{{describedBy}}}
-    #description = """{{{description}}}"""
-    #settings = {{{settings}}}
+    self.type = "{{type}}"
+    self.description = """{{{description}}}"""
+    self.settings = {{{settings}}}
+    # security stuff
+    ## headers
+{{#each describedBy.headers}}
+    self.{{@key}}={{@key}}
+{{/each}}
+    ## queryParameters
+{{#each describedBy.queryParameters}}
+    self.{{@key}}={{@key}}
+{{/each}}
+
 {{/oauth_2_0}}
 
 {{/each}}
