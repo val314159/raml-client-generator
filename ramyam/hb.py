@@ -1,109 +1,13 @@
 import os, pybars, collections
 from pybars import strlist, Compiler, Scope
 
-def transmogrify_params(parms):
-    arr = []
-    for parm in parms:
-        for k1,v1 in parm.iteritems():
-            arr.append( dict(v1, keyname=k1) )
-            pass
-        pass
-    return arr
-
-def _recurse(node,doc=None,pfx='',tab='  ',acc=[],uri_parms=[]):
-    if doc is None: doc=node
-    keylist = ('description','responses','is','body','queryParameters')
-
-    for k,v in node.iteritems():
-        path=pfx+str(k)
-        new_uri_parms = []
-        if type(v)==dict:
-
-            if 'uriParameters' in v:
-                    new_uri_parms.append( v['uriParameters'] )
-                    pass
-
-            if k.startswith('/'):
-                    #print tab, "RECURSP", path, type(v), v.keys()
-                    _recurse(v,doc,pfx=path,tab=tab+'  ',acc=acc,uri_parms=uri_parms+new_uri_parms)
-                    pass
-
-            elif k in ('get','post','delete'):
-                method=k
-                '''
-                    print tab, "RECURSM", path, type(v), v.keys()
-                    print tab, "GENERAT", pfx, method, repr(v)[:200]
-                    print tab, '     -----', uri_parms
-                    '''
-                for kk in v:
-                        if kk not in keylist:
-                            print "OUCH", kk
-                            pass
-                        pass
-
-                record = dict(path=pfx,method=method,knode=v.keys())
-
-                zuri_parms=uri_parms+new_uri_parms
-                if zuri_parms:
-                    record['uriParameters'] = transmogrify_params(zuri_parms)
-                    pass
-
-                if 'queryParameters' in v:
-                    record['queryParameters'] = transmogrify_params([v['queryParameters']])
-                    pass
-
-                if 'body' in v:
-                    for kk,vv in v.get('body').iteritems():
-                        typ = ''
-                        if kk=='formParameters':
-                            record['formParameters'] = transmogrify_params([vv])
-                            pass
-                        elif type(vv)==dict:
-                            for kkk,vvv in vv.iteritems():
-                                if kkk=='formParameters':
-                                    record['formParameters'] = transmogrify_params([vvv])
-                                    pass
-                                else:
-                                    print "k3 v3", kkk, vvv
-                                    pass
-                                pass
-                            pass
-                        pass
-                    pass
-
-                acc.append( record )
-                pass
-            elif k == 'uriParameters':
-                #print tab, "RECURSU", path, type(v), v
-                pass
-            else:
-                print tab, "RECURSI", path, type(v), v.keys()
-                pass
-            pass
-        elif type(v)==str:
-            #print tab, "RECURSS", path, type(v), repr(v)[:200]
-            pass
-        else:
-            #print tab, "RECURSE", path, type(v)
-            pass
-        pass
-    return acc
-
-def _generateFlatTree(this):
-    print "GENERATE FLAT TREE", type(this)
-    zz = _recurse(this.root['yaml'])
-    from pprint import pprint
-    print
-    print'-'*80
-    print
-    pprint(zz)
-    this.root['d'] = zz
-    pass
+from .helpers import *
 
 def subst(fname,context,verbose=False,outfile=None):
     source = u''+open(fname).read()
     template = Compiler().compile(source)
-    output = template(context, helpers={'generateFlatTree':_generateFlatTree})
+    output = template(context, helpers={'generateFlatTree':generateFlatTree,
+                                        'flattenMethodName':flattenMethodName})
     if verbose:
         print(output)
         pass
