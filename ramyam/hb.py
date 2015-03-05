@@ -49,15 +49,13 @@ def subst(fname,context,verbose=False,outfile=None):
                         for kk,vv in v.get('body').iteritems():
                             typ = ''
                             if kk=='formParameters':
-                                fp = vv
-                                d['formParameters'] = [fp]
+                                d['formParameters'] = [vv]
                                 pass
                             elif type(vv)==dict:
                                 typ = kk
                                 for kkk,vvv in vv.iteritems():
                                     if kkk=='formParameters':
-                                        fp = vvv
-                                        d['formParameters'] = [fp]
+                                        d['formParameters'] = [vvv]
                                         pass
                                     else:
                                         print "k3 v3", kkk, vvv
