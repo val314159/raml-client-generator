@@ -12,7 +12,11 @@ def _transmogrify_params(parms):
 
 def flattenMethodName(this, methodName):
     print "HOW DO I DO THIS?  (flatten a method name)"
-    pass
+    methodName=methodName.replace('/','_')
+    methodName=methodName.replace('-','_')
+    methodName=methodName.replace('{','_')
+    methodName=methodName.replace('}','_')
+    return methodName
 
 def _recurse(node,doc=None,pfx='',tab='  ',acc=[],uri_parms=[]):
     if doc is None: doc=node

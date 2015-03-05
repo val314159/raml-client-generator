@@ -53,7 +53,7 @@ class API:
     pass
 {{#each d}}
   #########
-  def rpc{{flat_path}}_{{method}}(self,
+  def rpc{{flattenMethodName path}}_{{method}}(self,
     {{#each parmsx.uri}}{{key_name}},{{/each}}
     {{#each parmsx.query}}{{key_name}},{{/each}}
     {{#each parmsx.form}}{{key_name}},{{/each}}):
