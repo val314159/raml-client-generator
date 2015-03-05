@@ -30,15 +30,8 @@ def subst(fname,context,verbose=False,outfile=None):
                     print tab, "RECURSM", path, type(v), v.keys()
                     print tab, "GENERAT", pfx, method, repr(v)[:200]
                     print tab, '     -----', uri_parms
-                    for kk in v:
-                        if kk not in keylist:
-                            print "OUCH", kk
-                            pass
-                        pass
-                    d = dict(path=pfx,method=method,knode=v.keys())
-                    zuri_parms=uri_parms+new_uri_parms
-                    if zuri_parms:
-                        d['uriParameters'] = zuri_parms
+
+                    def transmogrify_params(zuri_parms):
                         arr = []
                         for parm in zuri_parms:
                             for k1,v1 in parm.iteritems():
@@ -49,23 +42,33 @@ def subst(fname,context,verbose=False,outfile=None):
                             #print dict(x,keyname='qqqq')
                             pass
                         print "~~~~ ARR ", arr
+                        return arr
+                    
+                    for kk in v:
+                        if kk not in keylist:
+                            print "OUCH", kk
+                            pass
+                        pass
+                    d = dict(path=pfx,method=method,knode=v.keys())
+                    zuri_parms=uri_parms+new_uri_parms
+                    if zuri_parms:
+                        d['uriParameters'] = transmogrify_params(zuri_parms)
                         pass
 
                     if 'queryParameters' in v:
-                        d['queryParameters'] = [v['queryParameters']]
+                        d['queryParameters'] = transmogrify_params([v['queryParameters']])
                         pass
 
                     if 'body' in v:
                         for kk,vv in v.get('body').iteritems():
                             typ = ''
                             if kk=='formParameters':
-                                d['formParameters'] = [vv]
+                                d['formParameters'] = transmogrify_params([vv])
                                 pass
                             elif type(vv)==dict:
-                                typ = kk
                                 for kkk,vvv in vv.iteritems():
                                     if kkk=='formParameters':
-                                        d['formParameters'] = [vvv]
+                                        d['formParameters'] = transmogrify_params([vvv])
                                         pass
                                     else:
                                         print "k3 v3", kkk, vvv
