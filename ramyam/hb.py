@@ -39,6 +39,16 @@ def subst(fname,context,verbose=False,outfile=None):
                     zuri_parms=uri_parms+new_uri_parms
                     if zuri_parms:
                         d['uriParameters'] = zuri_parms
+                        arr = []
+                        for parm in zuri_parms:
+                            for k1,v1 in parm.iteritems():
+                                print '11111', k1, v1
+                                dd = dict(v1, keyname=k1)
+                                arr.append( dd )
+                                pass
+                            #print dict(x,keyname='qqqq')
+                            pass
+                        print "~~~~ ARR ", arr
                         pass
 
                     if 'queryParameters' in v:
