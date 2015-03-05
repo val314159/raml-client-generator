@@ -34,10 +34,49 @@ def subst(fname,context,verbose=False,outfile=None):
                             print "OUCH", kk
                             pass
                         pass
-                    acc.append( dict(path=pfx,method=method,node=v) )
+                    #acc.append( dict(path=pfx,method=method,node=v) )
+                    d = dict(
+                        path=pfx,
+                        method=method,
+                        uri_paths=uri_paths+new_uri_paths,
+                        knode=v.keys(),
+                        #query_params=v.get('queryParameters'),
+                        #body=v.get('body'),
+                        #node=v,
+                        )
+                    if 'body' in v:
+                        #fp = v.get('formParameters')
+                        #if fp:
+                        #    print " @@--@@--@@ FP", repr(typ), fp
+                        #    pass
+                        for kk,vv in v.get('body').iteritems():
+                            typ = ''
+                            print "KKVV", kk, vv
+                            if kk=='formParameters':
+                                fp = vv
+                                print " @@--@@--@@ FP", repr(typ), fp
+                                pass
+                            elif type(vv)==dict:
+                                print "DDDDDD"
+                                typ = kk
+                                for kkk,vvv in vv.iteritems():
+                                    if kkk=='formParameters':
+                                        print "k4 v4", kkk, kk, vvv
+                                        fp = vvv
+                                        print " @@--@@--@@ FP", repr(typ), fp
+                                        pass
+                                    else:
+                                        print "k3 v3", kkk, vvv
+                                        pass
+                                    pass
+                                pass
+                            pass
+                        d['body']=v.get('body')
+                        pass
+                    acc.append( d )
                     pass
                 elif k == 'uriParameters':
-                    print tab, "RECURSU", path, type(v), v
+                    #print tab, "RECURSU", path, type(v), v
                     pass
                 else:
                     print tab, "RECURSI", path, type(v), v.keys()
@@ -56,7 +95,10 @@ def subst(fname,context,verbose=False,outfile=None):
         print "GENERATE FLAT TREE", type(this)        
         zz = _recurse(this.root['yaml'])
         from pprint import pprint
-        #pprint(zz)
+        print
+        print'-'*80
+        print
+        pprint(zz)
         this.root['d'] = zz
         pass
     
