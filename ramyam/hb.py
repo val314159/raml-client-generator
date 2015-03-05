@@ -24,6 +24,7 @@ def subst(fname,context,verbose=False,outfile=None):
                     #print tab, "RECURSP", path, type(v), v.keys()
                     _recurse(v,doc,pfx=path,tab=tab+'  ',acc=acc,uri_parms=uri_parms+new_uri_parms)
                     pass
+
                 elif k in ('get','post','delete'):
                     method=k
                     print tab, "RECURSM", path, type(v), v.keys()
@@ -39,25 +40,23 @@ def subst(fname,context,verbose=False,outfile=None):
                     if zuri_parms:
                         d['uriParameters'] = zuri_parms
                         pass
+
                     if 'queryParameters' in v:
                         d['queryParameters'] = [v['queryParameters']]
                         pass
+
                     if 'body' in v:
                         for kk,vv in v.get('body').iteritems():
                             typ = ''
-                            #print "KKVV", kk, vv
                             if kk=='formParameters':
                                 fp = vv
-                                #print " @@--@@--@@ FP", repr(typ), fp
                                 d['formParameters'] = [fp]
                                 pass
                             elif type(vv)==dict:
                                 typ = kk
                                 for kkk,vvv in vv.iteritems():
                                     if kkk=='formParameters':
-                                        #print "k4 v4", kkk, kk, vvv
                                         fp = vvv
-                                        #print " @@--@@--@@ FP", repr(typ), fp
                                         d['formParameters'] = [fp]
                                         pass
                                     else:
@@ -66,7 +65,6 @@ def subst(fname,context,verbose=False,outfile=None):
                                     pass
                                 pass
                             pass
-                        #d['body']=v.get('body')
                         pass
                     acc.append( d )
                     pass
