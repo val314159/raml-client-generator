@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+{{xloop}}
+
 import requests
 
 class API:
@@ -11,9 +13,9 @@ class API:
         {{@key}}=None,
 {{/each}}
         # queryParameters
-{{#each describedBy.queryParameters}}
+{{#each2 describedBy.queryParameters}}
         {{@key}}=None,
-{{/each}}
+{{/each2}}
 {{/oauth_2_0}}
 {{/each}}
 ):

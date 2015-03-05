@@ -35,7 +35,7 @@ fi
 
 if [ "$2" == "ig" ]; then
   echo 'Trying python (instagram-api.raml)...'
-  python -mramyam.gs -y instagram-api.raml -intermediate >gen/languages/js/instagram-api.json
+  #python -mramyam.gs -y instagram-api.raml -intermediate >gen/languages/js/instagram-api.json
   echo ...
   python -mramyam.gs -y instagram-api.raml
   #python -mramyam.gen_server -y data/instagram-api.raml >instagram_svr.py
