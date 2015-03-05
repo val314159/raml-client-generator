@@ -7,63 +7,58 @@ def subst(fname,context,verbose=False,outfile=None):
     compiler = Compiler()
     template = compiler.compile(source)
 
-    def _recurse(d,doc=None,pfx='',tab='  ',acc=[],uri_paths=[]):
+    def _recurse(d,doc=None,pfx='',tab='  ',acc=[],uri_parms=[]):
         if doc is None: doc=d
         keylist = ('description','responses','is','body','queryParameters')
 
         for k,v in d.iteritems():
             path=pfx+str(k)
-            new_uri_paths = []
+            new_uri_parms = []
             if type(v)==dict:
 
                 if 'uriParameters' in v:
-                    new_uri_paths.append( v['uriParameters'] )
+                    new_uri_parms.append( v['uriParameters'] )
                     pass
 
                 if k.startswith('/'):
                     #print tab, "RECURSP", path, type(v), v.keys()
-                    _recurse(v,doc,pfx=path,tab=tab+'  ',acc=acc,uri_paths=uri_paths+new_uri_paths)
+                    _recurse(v,doc,pfx=path,tab=tab+'  ',acc=acc,uri_parms=uri_parms+new_uri_parms)
                     pass
                 elif k in ('get','post','delete'):
                     method=k
                     print tab, "RECURSM", path, type(v), v.keys()
                     print tab, "GENERAT", pfx, method, repr(v)[:200]
-                    print tab, '     -----', uri_paths
+                    print tab, '     -----', uri_parms
                     for kk in v:
                         if kk not in keylist:
                             print "OUCH", kk
                             pass
                         pass
-                    #acc.append( dict(path=pfx,method=method,node=v) )
-                    d = dict(
-                        path=pfx,
-                        method=method,
-                        uri_paths=uri_paths+new_uri_paths,
-                        knode=v.keys(),
-                        #query_params=v.get('queryParameters'),
-                        #body=v.get('body'),
-                        #node=v,
-                        )
+                    d = dict(path=pfx,method=method,knode=v.keys())
+                    zuri_parms=uri_parms+new_uri_parms
+                    if zuri_parms:
+                        d['uriParameters'] = zuri_parms
+                        pass
+                    if 'queryParameters' in v:
+                        d['queryParameters'] = [v['queryParameters']]
+                        pass
                     if 'body' in v:
-                        #fp = v.get('formParameters')
-                        #if fp:
-                        #    print " @@--@@--@@ FP", repr(typ), fp
-                        #    pass
                         for kk,vv in v.get('body').iteritems():
                             typ = ''
-                            print "KKVV", kk, vv
+                            #print "KKVV", kk, vv
                             if kk=='formParameters':
                                 fp = vv
-                                print " @@--@@--@@ FP", repr(typ), fp
+                                #print " @@--@@--@@ FP", repr(typ), fp
+                                d['formParameters'] = [fp]
                                 pass
                             elif type(vv)==dict:
-                                print "DDDDDD"
                                 typ = kk
                                 for kkk,vvv in vv.iteritems():
                                     if kkk=='formParameters':
-                                        print "k4 v4", kkk, kk, vvv
+                                        #print "k4 v4", kkk, kk, vvv
                                         fp = vvv
-                                        print " @@--@@--@@ FP", repr(typ), fp
+                                        #print " @@--@@--@@ FP", repr(typ), fp
+                                        d['formParameters'] = [fp]
                                         pass
                                     else:
                                         print "k3 v3", kkk, vvv
@@ -71,7 +66,7 @@ def subst(fname,context,verbose=False,outfile=None):
                                     pass
                                 pass
                             pass
-                        d['body']=v.get('body')
+                        #d['body']=v.get('body')
                         pass
                     acc.append( d )
                     pass
