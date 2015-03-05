@@ -48,12 +48,11 @@ class API:
 
 {{/each}}
 
-
-
     self.pfx=pfx
     self.sfx=sfx
     pass
 {{#each d}}
+  #########
   def rpc{{flat_path}}_{{method}}(self,
     {{#each parmsx.uri}}{{key_name}},{{/each}}
     {{#each parmsx.query}}{{key_name}},{{/each}}
@@ -72,6 +71,16 @@ class API:
     query_dict['{{key_name}}'] = {{key_name}}
 
 {{/each}}
+
+{{#each ../yaml.securitySchemes}}
+{{#oauth_2_0}}
+    # queryParameters
+{{#each describedBy.queryParameters}}
+    query_dict['{{@key}}'] = self.{{@key}}
+{{/each}}
+{{/oauth_2_0}}
+{{/each}}
+
 {{#each parmsx.form}}
     # f p {{{.}}}
     form_dict['{{key_name}}'] = {{key_name}}
