@@ -1,4 +1,10 @@
 {
   "q": [1,2,3],
-  "w": { "qwert": [ null ] }
+  "w": { "qwert": [ null ] },
+
+  "instagram-access_token":"185651424.06e610f.3bd9116b82b2448395ca411d2e13bc39",
+
+  "testvector": ["run_tests",
+    ["send_rest", "GET", "https://instagram.com/v1/media/popular?access_token={instagram-access_token}","_media_popular"]
+  ]
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import requests,json
+import os,sys,requests,json
 
 def wrongType(var,typ):
     #print "wrongType"+repr((var,typ))
@@ -107,8 +107,40 @@ class RequestsAPI(object):
        body = urllib.urlencode(form)
        pass
     print "GO", repr(uri+qstr)
-    return requests.{{method}}(uri+qstr,data=body)
 
+    ret = requests.{{method}}(uri+qstr,data=body)
+
+    if False:
+      pass # do nothing (since we never get here)
+{{#each responses}}
+    elif ret.status_code == {{@key}}:
+{{#each body}}
+      media_type = {{stringify @key}}
+      schema = {{stringify schema}}
+      if schema:
+        print "ok, lets verify this thing"
+        j = ret.json()
+        print >>sys.stderr, 100, '='*80
+        print >>sys.stderr, "Return Payload:", repr(j)
+        print >>sys.stderr, 500, '='*80
+        j['sdfg'] = [1,2,3]
+        print >>sys.stderr, 900, '='*80
+        import jsonschema
+        s = json.loads(schema)
+        print >>sys.stderr, "Schema1:", repr(s)
+        if '' in s:
+          print >>sys.stderr, "ITS IN THERE"
+          ss=s.pop('')
+          s["$schema"]=ss
+        print >>sys.stderr, "Schema2:", json.dumps(s, indent=4)
+        jsonschema.validate(s,j)
+{{/each}}
+      pass
+{{/each}}
+    else:
+      raise "total fail"
+
+    return ret
 {{/each}}
 
 def main():
@@ -139,6 +171,11 @@ class Test:
 
     def test(_):
         ret = _.api.rpc_media_popular_get()
-        assert ret.status_code == requests.codes.ok
+        if ret.status_code == 200:
+            print "OK1"
+        elif ret.status_code == 503:
+            print "OK2"
+        else:
+            raise "NO"
 
 if __name__=='__main__': test()
