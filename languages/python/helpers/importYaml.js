@@ -1,14 +1,15 @@
+var YAML = require('js-yaml');
 var fs = require('fs');
 
 /**
- * Import JSON into the resource
+ * Import Yaml into the resource
  *
  * @param  {Object} resource
  * @return ""
  */
-function importJson(resource, filename, symbol) {
+function importYaml(resource, filename, symbol) {
     var data = fs.readFileSync(filename,'ascii');
-    data = JSON.parse(data);
+    data = YAML.load(data);
     resource[symbol] = data;
     this[symbol] = data;
     return '';

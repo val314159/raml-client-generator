@@ -1,20 +1,13 @@
 /**
- * Stringify a resource into a request snippet.
+ * Recursively put together the full RAML path
  *
  * @param  {Object} resource
  * @return {String}
  */
-function lalala(resource) {
+function fullPath(resource) {
     if (resource.key===undefined) {
 	return '';
     }
-    //var context = this;
-    /*
-    var arr=[];
-    for (var k in resource){
-	arr.push(k);
-    }
-*/
     var relUri = resource.relativeUri;
     var uriParameters = resource.uriParameters;
     for (var n=0; n<uriParameters.length; n++) {
@@ -22,11 +15,10 @@ function lalala(resource) {
 	relUri=relUri.replace('{'+n+'}',
 			      '{'+val.displayName+'}');
     }
-    var uri = lalala(resource.parent);
+    var uri = fullPath(resource.parent);
     return uri+relUri;
 }
 module.exports = function (resource) {
-    //var context = this;
-    var uri = lalala(resource);
+    var uri = fullPath(resource);
     return uri;
 };

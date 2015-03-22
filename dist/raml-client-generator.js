@@ -171,20 +171,15 @@ module.exports = generator({
 }).call(this,"/languages/javascript")
 },{"./helpers/dependencies":1,"./helpers/parameters-snippet":2,"./helpers/request-snippet":3,"camel-case":18,"fs":10,"javascript-stringify":57,"raml-generator":76}],5:[function(require,module,exports){
 /**
- * Stringify a resource into a request snippet.
+ * Recursively put together the full RAML path
  *
  * @param  {Object} resource
  * @return {String}
  */
-function lalala(resource) {
+function fullPath(resource) {
     if (resource.key===undefined) {
 	return '';
-    }/*
-    var context = this;
-    var arr=[];
-    for (var k in resource){
-	arr.push(k);
-    }*/
+    }
     var relUri = resource.relativeUri;
     var uriParameters = resource.uriParameters;
     for (var n=0; n<uriParameters.length; n++) {
@@ -192,12 +187,17 @@ function lalala(resource) {
 	relUri=relUri.replace('{'+n+'}',
 			      '{'+val.displayName+'}');
     }
-    var uri = lalala(resource.parent);
+    var uri = fullPath(resource.parent);
     return uri+relUri;
 }
-module.exports = function (resource) {
-    //var context = this;
-    var uri = lalala(resource);
+/**
+ * Recursively put together the full RAML path
+ *
+ * @param  {Object} resource
+ * @return {String}
+ */
+module.exports = function xx (resource) {
+    var uri = fullPath(resource);
     uri=uri.replace(/\//g,'_');
     uri=uri.replace(/-/g,'_');
     uri=uri.replace(/{/g,'_');
@@ -207,22 +207,15 @@ module.exports = function (resource) {
 
 },{}],6:[function(require,module,exports){
 /**
- * Stringify a resource into a request snippet.
+ * Recursively put together the full RAML path
  *
  * @param  {Object} resource
  * @return {String}
  */
-function lalala(resource) {
+function fullPath(resource) {
     if (resource.key===undefined) {
 	return '';
     }
-    //var context = this;
-    /*
-    var arr=[];
-    for (var k in resource){
-	arr.push(k);
-    }
-*/
     var relUri = resource.relativeUri;
     var uriParameters = resource.uriParameters;
     for (var n=0; n<uriParameters.length; n++) {
@@ -230,12 +223,11 @@ function lalala(resource) {
 	relUri=relUri.replace('{'+n+'}',
 			      '{'+val.displayName+'}');
     }
-    var uri = lalala(resource.parent);
+    var uri = fullPath(resource.parent);
     return uri+relUri;
 }
 module.exports = function (resource) {
-    //var context = this;
-    var uri = lalala(resource);
+    var uri = fullPath(resource);
     return uri;
 };
 
@@ -264,13 +256,14 @@ module.exports = function(resource){
 };
 
 },{}],8:[function(require,module,exports){
+var fs = require('fs');
+
 /**
- * Stringify a resource into a request snippet.
+ * Import JSON into the resource
  *
  * @param  {Object} resource
- * @return {String}
+ * @return ""
  */
-var fs = require('fs');
 function importJson(resource, filename, symbol) {
     var data = fs.readFileSync(filename,'ascii');
     data = JSON.parse(data);
@@ -1347,8 +1340,6 @@ Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert
 
 // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
 Buffer.prototype.copy = function copy (target, target_start, start, end) {
-  var self = this // source
-
   if (!start) start = 0
   if (!end && end !== 0) end = this.length
   if (target_start >= target.length) target_start = target.length
@@ -1357,13 +1348,13 @@ Buffer.prototype.copy = function copy (target, target_start, start, end) {
 
   // Copy 0 bytes; we're done
   if (end === start) return 0
-  if (target.length === 0 || self.length === 0) return 0
+  if (target.length === 0 || this.length === 0) return 0
 
   // Fatal error conditions
   if (target_start < 0) {
     throw new RangeError('targetStart out of bounds')
   }
-  if (start < 0 || start >= self.length) throw new RangeError('sourceStart out of bounds')
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
   if (end < 0) throw new RangeError('sourceEnd out of bounds')
 
   // Are we oob?
@@ -1448,8 +1439,7 @@ Buffer._augment = function _augment (arr) {
   arr.constructor = Buffer
   arr._isBuffer = true
 
-  // save reference to original Uint8Array get/set methods before overwriting
-  arr._get = arr.get
+  // save reference to original Uint8Array set method before overwriting
   arr._set = arr.set
 
   // deprecated, will be removed in node 0.13+

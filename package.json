@@ -86,6 +86,7 @@
     "param-case": "^1.0.1",
     "pascal-case": "^1.0.0",
     "raml-parser": "^0.8.10",
+    "js-yaml": "^3.2.7",
     "raml-generator": "^0.1.1",
     "snake-case": "^1.0.1",
     "upper-case": "^1.0.3",
